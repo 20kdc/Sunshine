@@ -1963,21 +1963,9 @@ namespace stream {
 
     void
     force_idr() {
-      BOOST_LOG(info) << "Forcing IDR on all sessions";
-      auto ref = broadcast.ref();
-      auto &sessions = ref->control_server._sessions;
-      auto lg = sessions.lock();
-      for (auto pos = std::begin(*sessions); pos != std::end(*sessions); ++pos) {
-        auto session_p = *pos;
-
-        // If a session is not established, it doesn't need an IDR
-        if (!session_p->control.peer) {
-          continue;
-        }
-
-        // Cause the IDR
-        session_p->video.idr_events->raise(true);
-      }
+      BOOST_LOG(info) << "Forcing IDR on any session";
+      global_idr_event = true;
+      BOOST_LOG(info) << "Done forcing IDR on any session";
     }
   }  // namespace session
 }  // namespace stream

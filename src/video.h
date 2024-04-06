@@ -14,6 +14,8 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+extern volatile bool global_idr_event;
+
 struct AVPacket;
 namespace video {
 

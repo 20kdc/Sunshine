@@ -32,6 +32,8 @@ extern "C" {
 }
 #endif
 
+volatile bool global_idr_event;
+
 using namespace std::literals;
 namespace video {
 
@@ -1796,6 +1798,11 @@ namespace video {
         idr_events->pop();
       }
 
+      if (global_idr_event) {
+        requested_idr_frame = true;
+        global_idr_event = false;
+      }
+
       if (requested_idr_frame) {
         session->request_idr_frame();
       }
@@ -2016,6 +2023,10 @@ namespace video {
           if (ctx->idr_events->peek()) {
             pos->session->request_idr_frame();
             ctx->idr_events->pop();
+          }
+          if (global_idr_event) {
+            global_idr_event = false;
+            pos->session->request_idr_frame();
           }
 
           if (frame_captured && pos->session->convert(*img)) {
